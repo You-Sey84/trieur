@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "rgb_lcd.h"
+#include <ESP32Encoder.h>
 
 rgb_lcd lcd;
 
