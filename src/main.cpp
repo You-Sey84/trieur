@@ -8,11 +8,20 @@ rgb_lcd lcd;
   int BP1 = 2;
   int BP2 = 12;
   int POT = 33;
+  int pmw = 27;
+
 
   int Val_BP0 ;
   int Val_BP1 ;
   int Val_BP2 ;
   int Val_POT ;
+
+
+  int frequence = 25000;
+  int canal1 = 1;
+  int resolution = 11;
+
+  
 
 void setup()
 {
@@ -25,9 +34,14 @@ void setup()
   lcd.printf("Trieur de balles\n");
   lcd.setRGB(0,0,255);
 
+  ledcSetup(canal1,frequence,resolution);
+
   pinMode(BP0,INPUT_PULLUP);
   pinMode(BP1,INPUT_PULLUP);
   pinMode(BP2,INPUT_PULLUP);
+
+  ledcAttachPin(pmw,canal1);
+
 
 }
 
@@ -37,10 +51,10 @@ void loop()
   Val_BP0 = digitalRead(BP0);
   Val_BP1 = digitalRead(BP1);
   Val_BP2 = digitalRead(BP2);
+  ledcWrite(canal1,Val_POT/2);
   lcd.setCursor(0,0);
   lcd.printf("BP0%dBP1%dBP2%d",Val_BP0,Val_BP1,Val_BP2);
   lcd.setCursor(0,1);
-  lcd.printf("POT%5d",Val_POT);
-  Serial.printf("POT%5d",Val_POT);
-
+  lcd.printf("POT%4d",Val_POT);
+  Serial.printf("POT%4d",Val_POT);
 }
