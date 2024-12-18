@@ -6,6 +6,24 @@
 #include <SPI.h>
 
 
+void vTaskPeriodic(void *pvParameters)
+{
+ TickType_t xLastWakeTime;
+ // Lecture du nombre de ticks quand la tâche commence
+ xLastWakeTime = xTaskGetTickCount();
+ while (1)
+ {
+ Serial.printf("A répéter\n");
+ 
+ // Endort la tâche pendant le temps restant par rapport au réveil,
+ // ici 100ms, donc la tâche s'effectue ici toutes les 100ms.
+ // xLastWakeTime sera mis à jour avec le nombre de ticks au prochain
+ // réveil de la tâche.
+ vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(100));
+ }
+}
+
+
 rgb_lcd lcd;
 
 
@@ -17,11 +35,14 @@ int POT = 33;
 int pmw = 27;
 int EA = 23 ;
 int EB = 19 ;
+int IR0 = 36;
 
 int Val_BP0 ;
 int Val_BP1 ;
 int Val_BP2 ;
 int Val_POT ;
+int Val_IR0 ;
+
 
 
 int frequence = 25000;
@@ -40,6 +61,8 @@ void setup()
 {
   // Initialise la liaison avec le terminal
   Serial.begin(115200);
+
+  xTaskCreate(vTaskPeriodic, "vTaskPeriodic", 10000, NULL, 2, NULL);
   
   
   // Initialise l'écran LCD
@@ -66,6 +89,7 @@ void setup()
 
   encoder.attachFullQuad(EA,EB);
   encoder.setCount(0);
+  
 }
 
 void loop()
@@ -73,6 +97,7 @@ void loop()
   
   vit = encoder.getCount();
   Val_POT = analogRead(POT);
+  Val_IR0 = analogRead(IR0);
   Val_BP0 = digitalRead(BP0);
   Val_BP1 = digitalRead(BP1);
   Val_BP2 = digitalRead(BP2); 
@@ -106,4 +131,10 @@ void loop()
   
 
   Serial.printf("Top : %d\n", vit);
+  static int i = 0;
+  Serial.printf("Boucle principale : %d\n", i++);
+  delay(1000); 
+
+
+
 }
