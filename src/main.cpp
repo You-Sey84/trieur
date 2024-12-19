@@ -9,22 +9,24 @@
 #include <Wire.h>
 
 
+int vit;
 
 void vTaskPeriodic(void *pvParameters)
 {
- TickType_t xLastWakeTime;
- // Lecture du nombre de ticks quand la tâche commence
- xLastWakeTime = xTaskGetTickCount();
- while (1)
- {
- /*Serial.printf("A répéter\n");*/
- 
- // Endort la tâche pendant le temps restant par rapport au réveil,
- // ici 100ms, donc la tâche s'effectue ici toutes les 100ms.
- // xLastWakeTime sera mis à jour avec le nombre de ticks au prochain
- // réveil de la tâche.
 
- vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(100));
+  TickType_t xLastWakeTime;
+  // Lecture du nombre de ticks quand la tâche commence
+  xLastWakeTime = xTaskGetTickCount();
+  while (1)
+  {
+  /*Serial.printf("A répéter\n");*/
+ 
+  // Endort la tâche pendant le temps restant par rapport au réveil,
+  // ici 100ms, donc la tâche s'effectue ici toutes les 100ms.
+  // xLastWakeTime sera mis à jour avec le nombre de ticks au prochain
+  // réveil de la tâche.
+
+  vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(100));
 
 
 
@@ -57,7 +59,7 @@ int resolution = 11;
 int resolution1 = 16;
 int phase = 26 ;
 int couleur; 
-int vit;
+
 
 uint16_t r, g, b, c;
 Adafruit_TCS34725 tcs(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_16X);
@@ -95,12 +97,12 @@ void setup()
 
 
 
-  if (tcs.begin()){
+  /*if (tcs.begin()){
       Serial.println("TCS detecter!");
   }
   else{
       Serial.println("TCS pas detecter!");
-  }
+  }*/
 
 
 
@@ -142,17 +144,15 @@ void loop()
   }
 
   else{
-    digitalWrite(phase,LOW
-    
-    );
+    digitalWrite(phase,LOW);
   }
+  
   
   ledcWrite(canal1,Val_POT/2);
   ledcWrite(canal2,Val_POS);   // 3700   4700   5700
-  
   lcd.setCursor(0,0);
   /*lcd.printf("BP0%dBP1%dBP2%d",Val_BP0,Val_BP1,Val_BP2);*/
-  lcd.printf("POT%10d\n",Val_POT*4);
+  lcd.printf("POT%10d\n",Val_POT*2);
   /*Serial.printf("POT%4d",Val_POT);*/
 
   tcs.getRawData(&r,&g,&b,&c);
@@ -163,38 +163,35 @@ void loop()
   lcd.printf("G:%5d", g);
   lcd.setCursor(0,1);
   lcd.printf("B:%5d", b);
-  lcd.printf("C:%5d", c);*/
-  
+  lcd.printf("C:%5d", c);
+  */
 
-  /*Serial.printf("Top : %d\n", vit);
+  Serial.printf("Top : %d\n", vit);
   static int i = 0;
   Serial.printf("Boucle principale : %d\n", i++);
   delay(1000); 
-  */
+  
+  
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
 
-   if(mpu.getMotionInterruptStatus()) {
-    /* Get new sensor events with the readings */
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-
-    /* Print out the values */
-    Serial.print("AccelX:");
-    Serial.print(a.acceleration.x);
-    Serial.print(",");
-    Serial.print("AccelY:");
-    Serial.print(a.acceleration.y);
-    Serial.print(",");
-    Serial.print("AccelZ:");
-    Serial.print(a.acceleration.z);
-    Serial.print(", ");
-    Serial.print("GyroX:");
-    Serial.print(g.gyro.x);
-    Serial.print(",");
-    Serial.print("GyroY:");
-    Serial.print(g.gyro.y);
-    Serial.print(",");
-    Serial.print("GyroZ:");
-    Serial.print(g.gyro.z);
-    Serial.println("");
-  }
+  /* Print out the values */
+  Serial.print("AccelX:");
+  Serial.print(a.acceleration.x);
+  Serial.print(",");
+  Serial.print("AccelY:");
+  Serial.print(a.acceleration.y);
+  Serial.print(",");
+  Serial.print("AccelZ:");
+  Serial.print(a.acceleration.z);
+  Serial.print(", ");
+  Serial.print("GyroX:");
+  Serial.print(g.gyro.x);
+  Serial.print(",");
+  Serial.print("GyroY:");
+  Serial.print(g.gyro.y);
+  Serial.print(",");
+  Serial.print("GyroZ:");
+  Serial.print(g.gyro.z);
+  Serial.println("");
 }
